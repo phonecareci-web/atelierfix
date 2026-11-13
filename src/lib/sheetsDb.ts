@@ -7,6 +7,7 @@ import {
   RepairTicket,
   WorkshopDatabase,
 } from '../types/repair';
+import { buildLauncherHtml } from './launcherGenerator';
 
 export class WorkspaceApiError extends Error {
   status: number;
@@ -323,29 +324,7 @@ export async function createDriveLauncherFile(
   appUrl: string
 ): Promise<{ id: string; webViewLink: string }> {
   const folderId = await ensureWorkshopFolder(token);
-  const directLink = `${appUrl}/?sheetId=${encodeURIComponent(spreadsheetId)}`;
-
-  const htmlContent = `<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=${directLink}" />
-  <title>Ouvrir AtelierFix</title>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: #f8fafc; color: #0f172a; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 32px; max-width: 460px; text-align: center; }
-    a { display: inline-block; margin-top: 16px; background: #1d4ed8; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; }
-  </style>
-</head>
-<body>
-  <div class="card">
-    <h1>AtelierFix — Lanceur Google Drive</h1>
-    <p>Redirection automatique vers votre atelier de réparation...</p>
-    <a href="${directLink}">Ouvrir l'application AtelierFix</a>
-  </div>
-  <script>window.location.replace(${JSON.stringify(directLink)});</script>
-</body>
-</html>`;
+  const htmlContent = buildLauncherHtml({ appUrl, spreadsheetId });
 
   const metadata = {
     name: 'Ouvrir AtelierFix (Application Atelier).html',

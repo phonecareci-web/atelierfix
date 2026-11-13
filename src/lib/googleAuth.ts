@@ -25,6 +25,9 @@ provider.setCustomParameters({
   prompt: 'select_account',
 });
 
+export const isFileProtocol =
+  typeof window !== 'undefined' && window.location.protocol === 'file:';
+
 let isSigningIn = false;
 // In-memory access token cache (never stored in localStorage/sessionStorage)
 let cachedAccessToken: string | null = null;
@@ -33,6 +36,10 @@ export const initAuth = (
   onAuthSuccess?: (user: User, token: string) => void,
   onAuthFailure?: (user: User | null) => void
 ) => {
+  if (isFileProtocol) {
+    onAuthFailure?.(null);
+    return () => {};
+  }
   return onAuthStateChanged(auth, (user: User | null) => {
     if (user) {
       if (cachedAccessToken) {
@@ -52,6 +59,11 @@ export const googleSignIn = async (): Promise<{
   user: User;
   accessToken: string;
 }> => {
+  if (isFileProtocol) {
+    throw new Error(
+      "La synchronisation Google Drive nécessite l'ouverture de l'application depuis son adresse web (HTTPS / PWA). En fichier autonome local, vos données restent enregistrées sur cet appareil."
+    );
+  }
   try {
     isSigningIn = true;
     const result = await signInWithPopup(auth, provider);

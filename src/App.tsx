@@ -39,6 +39,7 @@ import {
   getAccessToken,
   googleSignIn,
   initAuth,
+  isFileProtocol,
   logout,
 } from './lib/googleAuth';
 import {
@@ -221,10 +222,17 @@ export default function App() {
         setSyncQueue(queue);
 
         if (
+          isFileProtocol ||
           (!navigator.onLine && (savedDb || localTickets.length > 0)) ||
           (savedDb?.spreadsheetId === 'local-offline' && !initialParams.sheetId)
         ) {
-          setDb(savedDb || LOCAL_WORKSHOP_DB);
+          setDb(
+            isFileProtocol
+              ? savedDb?.spreadsheetId === 'local-offline'
+                ? savedDb
+                : LOCAL_WORKSHOP_DB
+              : savedDb || LOCAL_WORKSHOP_DB
+          );
           setTickets(localTickets);
           setHistory(localHistory);
         }
@@ -989,7 +997,10 @@ export default function App() {
             </select>
           </div>
 
-          <PWAInstallButton />
+          <PWAInstallButton
+            spreadsheetId={db.spreadsheetId}
+            workshopTitle={db.title}
+          />
 
           <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/60">
             <div className="flex items-center gap-2 text-xs font-semibold text-slate-900 dark:text-slate-100">
@@ -1147,7 +1158,10 @@ export default function App() {
                   ))}
                 </select>
               </div>
-              <PWAInstallButton />
+              <PWAInstallButton
+                spreadsheetId={db.spreadsheetId}
+                workshopTitle={db.title}
+              />
               {user ? (
                 <button
                   type="button"

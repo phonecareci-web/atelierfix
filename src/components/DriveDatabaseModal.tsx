@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import { DriveSpreadsheetFile, WorkshopDatabase } from '../types/repair';
 import { formatDateTimeFr } from '../lib/statusConfig';
+import { buildLauncherHtml, downloadTextFile } from '../lib/launcherGenerator';
+import { isFileProtocol } from '../lib/googleAuth';
 import { GoogleSignInButton } from './GoogleSignInButton';
 
 interface DriveDatabaseModalProps {
@@ -180,6 +182,46 @@ export const DriveDatabaseModal: React.FC<DriveDatabaseModalProps> = ({
               </div>
             )}
           </section>
+
+          {!isFileProtocol && (
+            <section className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="max-w-md">
+                  <h3 className="font-display text-sm font-semibold text-slate-900 dark:text-slate-100">
+                    Fichiers installables prêts à l'emploi
+                  </h3>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                    Téléchargez l'application complète en un seul fichier HTML autonome (100% hors ligne) ou un fichier lanceur pour ce poste.
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <a
+                    href="/AtelierFix-Autonome.html"
+                    download="AtelierFix-Autonome.html"
+                    className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-blue-700 px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    <span>AtelierFix-Autonome.html</span>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const html = buildLauncherHtml({
+                        appUrl: window.location.origin,
+                        spreadsheetId: db.spreadsheetId,
+                        workshopTitle: db.title,
+                      });
+                      downloadTextFile('AtelierFix-Lanceur.html', html);
+                    }}
+                    className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                  >
+                    <FileCode2 className="h-3.5 w-3.5" />
+                    <span>Lanceur.html</span>
+                  </button>
+                </div>
+              </div>
+            </section>
+          )}
 
           {/* If not connected to Google yet */}
           {!isGoogleAuthenticated ? (

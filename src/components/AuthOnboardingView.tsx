@@ -16,6 +16,7 @@ import { DriveSpreadsheetFile } from '../types/repair';
 import { GoogleSignInButton } from './GoogleSignInButton';
 import { PWAInstallButton } from './PWAInstallButton';
 import { formatDateTimeFr } from '../lib/statusConfig';
+import repairWorkbenchHero from '../assets/images/repair_workbench_hero_1794587471493.jpg';
 
 interface AuthOnboardingViewProps {
   needsAuth: boolean;
@@ -353,7 +354,7 @@ export const AuthOnboardingView: React.FC<AuthOnboardingViewProps> = ({
             <div className="relative h-full min-h-[340px] overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900">
               {!imgError ? (
                 <img
-                  src="/src/assets/images/repair_workbench_hero_1794587471493.jpg"
+                  src={repairWorkbenchHero}
                   alt="Poste de travail d'atelier de réparation de smartphones"
                   referrerPolicy="no-referrer"
                   onError={() => setImgError(true)}
