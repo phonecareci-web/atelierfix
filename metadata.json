@@ -1,0 +1,6 @@
+{
+  "name": "AtelierFix",
+  "description": "Logiciel de gestion d'atelier de réparation de téléphones avec base de données stockée sur Google Drive et Google Sheets en temps réel.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
